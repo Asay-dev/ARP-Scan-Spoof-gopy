@@ -24,7 +24,7 @@ class ARP_Scan:
             cls.instance = super().__new__(cls)
         return cls.instance
 
-    def __init__(self, target="192.168.0.0/24") -> None:
+    def __init__(self, target="192.168.0.0/24"):
         """
         target='192.168.0.0/24' --设置目标参数
         """
@@ -96,17 +96,18 @@ def process_run(route_ip, my_mac, ip, mac):
 
 if __name__ == "__main__":
     scan = ARP_Scan()
-    scan.search_Interface()
+    # scan.search_Interface() # 输出你的网卡信息
 
     target = "192.168.0.0/24"
-    interface = "Killer(R) Wi-Fi 6 AX1650x 160MHz Wireless Network Adapter (200NGW)"
-    scan.my_ip = "192.168.0.244"
-    scan.my_mac = "6a:5e:e1:13:a7:08"
+    # interface = "Killer(R) Wi-Fi 6 AX1650x 160MHz Wireless Network Adapter (200NGW)"
+    interface = "wlan0"
+    scan.my_ip = "192.168.0.32"
+    scan.my_mac = "E0:1F:88:30:66:80"
     scan.route_ip = "192.168.0.1"
     scan.route_mac = "192.168.0.1"
 
     # 白名单
-    scan.whiteList = []
+    scan.whiteList = ["192.168.0.244"]
     scan.whiteList.append(scan.route_ip)
 
     # 开始扫描
