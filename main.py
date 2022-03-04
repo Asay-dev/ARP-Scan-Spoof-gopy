@@ -103,7 +103,7 @@ def process_run(route_ip, my_mac, ip, mac):
             pdst=ip  # 目标IP
         )
         # print((eth/arp).show())
-        sendp(eth/arp, inter=2, loop=1)
+        sendp(eth/arp, inter=20, loop=1)
     except Exception as f:
         print("\n[ERROR]  {:}-{:} : {:}".format(ip, mac, f))
 
@@ -115,13 +115,13 @@ if __name__ == "__main__":
     target = "192.168.0.0/24"
     # interface = "Killer(R) Wi-Fi 6 AX1650x 160MHz Wireless Network Adapter (200NGW)"
     interface = "Killer(R) Wi-Fi 6 AX1650x 160MHz Wireless Network Adapter (200NGW)"
-    scan.my_ip = "192.168.0.186"
-    scan.my_mac = "38:00:25:ab:e0:af"
+    scan.my_ip = "192.168.0.194"
+    scan.my_mac = "12:97:ab:ad:34:d8"
     scan.route_ip = "192.168.0.1"
     scan.route_mac = ""
 
     # 白名单
-    scan.whiteList = ["192.168.0.244", "192.168.0.149"]
+    scan.whiteList = ["192.168.0.32", "192.168.0.38"]
     scan.whiteList.append(scan.route_ip)
 
     # 开始扫描
