@@ -11,7 +11,7 @@ import (
 	"github.com/google/gopacket/pcap"
 )
 
-func main() {
+func Start_posion2() {
 	device := ""
 	gt := (net.ParseIP(""))[12:]
 	tg := (net.ParseIP(""))[12:]
