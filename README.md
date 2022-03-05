@@ -1,14 +1,15 @@
 # ARTScript-ARP
 
-ARTScript
-ARTCyber
-ARTCoder
-
 ARTScript提供的ARP工具包,包含ARP扫描攻击等各类功能,提供了多种语言的版本方便在不同平台使用.
 **[ ! ]** 手机端TERMUX使用golang版本
 
-+ golang 实现arpposion
-+ python 简单实现ARP扫描 和 断网攻击工具, 采用单例设计模式, 方便调用.
++ golang:
+  + arpScan(working)
+  + arpSpoof(not working)
+
++ python:
+  + arpScan(Working)
+  + arpSpoof(Working)
 
 # 安装说明
 

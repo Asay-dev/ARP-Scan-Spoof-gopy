@@ -70,7 +70,7 @@ if __name__ == "__main__":
     scan = ARP_Scan()
     scan.search_Interface()  # 输出你的网卡信息
 
-    target = "192.168.31.0/24"
+    target = "192.168.0.0/24"
     interface = "Killer(R) Wi-Fi 6 AX1650x 160MHz Wireless Network Adapter (200NGW)"
 
     # 开始扫描

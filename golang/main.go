@@ -2,11 +2,16 @@ package main
 
 import (
 	"ARTScript_ARP/arpScan"
+	"fmt"
 	"log"
 	"net"
 
+	"github.com/google/gopacket/pcap"
 	"github.com/jackpal/gateway"
 )
+
+var lc_ip net.IP
+var interface_ip net.IP
 
 func main() {
 	// device := ""
@@ -42,20 +47,44 @@ func main() {
 		}
 		log.Printf("[-] interface %v:%v", iface.Name, addr)
 	}
-
+	// 查找路由器
 	if ip, err := gateway.DiscoverGateway(); err != nil {
 		log.Printf("[!] ERROR : %v", err)
 	} else {
 		log.Printf("[*] Gateway : %v", ip)
-		arpScan.Start_scan("WLAN", ip)
+		// arpScan.Start_scan("WLAN", ip)
 	}
+	// 查看网卡
+	if lc_ip, err := gateway.DiscoverInterface(); err != nil {
+		log.Printf("ERROR : %v", err)
+	} else {
+		log.Printf("Interface : %v", lc_ip)
+	}
+
 	log.Println("==================================================================================================")
 
-	arpScan.Start_scan2()
+	// 得到所有的(网络)设备
+	devices, err := pcap.FindAllDevs()
+	if err != nil {
+		log.Fatal(err)
+	}
+	// 打印设备信息
+	fmt.Println("Devices found:")
+	for _, device := range devices {
 
-	// if ip, err := gateway.DiscoverInterface(); err != nil {
-	// 	log.Printf("ERROR : %v", err)
-	// } else {
-	// 	log.Printf("Interface : %v", ip)
-	// }
+		for _, address := range device.Addresses {
+			if fmt.Sprintf("%s", address.IP) == "192.168.0.194" {
+				fmt.Println("\nName: ", device.Name)
+				fmt.Println("Description: ", device.Description)
+				fmt.Println("Devices addresses: ", device.Description)
+
+				fmt.Println("- IP address: ", address.IP)
+				fmt.Println("- Subnet mask: ", address.Netmask)
+				arpScan.Start_scan3(device.Name)
+			}
+		}
+		// arpScan.Start_scan3(device.Name)
+
+	}
+
 }
