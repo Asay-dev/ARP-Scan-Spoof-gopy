@@ -34,6 +34,6 @@ ARTScript提供的ARP工具包,包含ARP扫描攻击等各类功能,提供了多
 + ARP_Scan.arpspoof(): 读取扫描到的客户端ip和mac，判断白名单和已经攻击的对象，给每一个客户端创建一个process进程来进行独立的攻击。
 + ARP_Scan.send_Package(): 发送arp包来扫描存活设备'plf:AlienBlue_walk2'
 
-# 感谢 Thanks
+# 感谢 Thanx
 + https://github.com/HayatoDoi/arp-scan-X
 + 

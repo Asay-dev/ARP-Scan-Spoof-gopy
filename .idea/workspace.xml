@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0dab732d-3d64-4786-a663-0a455f2286a0" name="变更" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/ARP-Scan.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/golang/getLocalInfo.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/golang/globalChan/globalchan.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/golang/arpPosion/arpposion2.go" beforeDir="false" afterPath="$PROJECT_DIR$/golang/arpPosion/arpposion.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/golang/go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/golang/go.sum" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/golang/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/golang/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +39,7 @@
     <property name="go.vendoring.notification.had.been.shown" value="true" />
     <property name="go.watchers.conflict.with.on.save.actions.check.performed" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/golang" />
+    <property name="settings.editor.selected.configurable" value="go.sdk" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">

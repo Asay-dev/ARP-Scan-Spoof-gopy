@@ -115,15 +115,16 @@ if __name__ == "__main__":
 
     target = "192.168.0.0/24"
     # interface = "Killer(R) Wi-Fi 6 AX1650x 160MHz Wireless Network Adapter (200NGW)"
-    interface = "Killer(R) Wi-Fi 6 AX1650x 160MHz Wireless Network Adapter (200NGW)"
-    scan.my_ip = "192.168.31.254"
-    scan.my_mac = "38:00:25:ab:e0:af"
+    interface = "Killer E3000 2.5 Gigabit Ethernet Controller"
+    scan.my_ip = "192.168.0.72"
+    scan.my_mac = "00:d8:61:84:58:59"
     scan.route_ip = "192.168.0.1"
-    scan.route_mac = ""
+    scan.route_mac = "80:ea:07:62:72:d6"
 
     # 白名单
-    scan.whiteList = ["192.168.0.137", "192.168.0.1"]
+    scan.whiteList = ["192.168.0.1", "192.168.0.1"]
     scan.whiteList.append(scan.route_ip)
+    scan.whiteList.append(scan.my_ip)
 
     # 开始扫描
     while(True):
